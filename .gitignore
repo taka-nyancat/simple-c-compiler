@@ -1,0 +1,8 @@
+*~
+*.o
+tmp*
+a.out
+simple-cc
+test.c
+docker-compose.yaml
+Dockerfile
