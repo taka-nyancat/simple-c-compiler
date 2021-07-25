@@ -37,6 +37,15 @@ bool consume(char *op) {
     return true;
 }
 
+Token *consume_ident(){
+    if (token->kind != TK_IDENT) {
+        return NULL;
+    }
+    Token *tok = token;
+    token = token->next;
+    return tok;
+}
+
 // if kinda next token is sign, this function read next one token  else reurn error
 void expect(char *op){
     if (token->kind != TK_RESERVED || strlen(op) !=  token->len || memcmp(token->str, op, token->len)){
@@ -92,7 +101,7 @@ Token *tokenize(){
             continue;
         }
 
-        if (strchr("+-*/()<>", *p)){
+        if (strchr("+-*/()<>;=", *p)){
             cur = new_token(TK_RESERVED, cur, p++, 1);
             continue;
         }
@@ -104,6 +113,13 @@ Token *tokenize(){
             cur->len = p - q;
             continue;
         }
+
+        if ('a' <= *p && *p <= 'z') {
+            cur = new_token(TK_IDENT, cur, p++, 0);
+            cur->len = 1;
+            continue;
+        }
+
         error_at(p, "invalid token");
     }
     new_token(TK_EOF, cur, p, 0);
