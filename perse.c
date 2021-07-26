@@ -1,6 +1,9 @@
 #include "simple-cc.h"
 
 Token *token;
+LVar *locals;
+
+
 
 // user input
 char *user_input;
@@ -115,8 +118,14 @@ Token *tokenize(){
         }
 
         if ('a' <= *p && *p <= 'z') {
-            cur = new_token(TK_IDENT, cur, p++, 0);
-            cur->len = 1;
+            char *c = p;
+            while ('a' <= *c && *p <= 'z') {
+                c++;
+            }
+            int len = c - p;
+            // fprintf(stderr, "TK_IDENT %s %d\n", p, len);
+            cur = new_token(TK_IDENT, cur, p, len);
+            p = c;
             continue;
         }
 
@@ -124,4 +133,13 @@ Token *tokenize(){
     }
     new_token(TK_EOF, cur, p, 0);
     return head.next;
+}
+
+LVar *find_lvar(Token *tok) {
+    for (LVar *var = locals; var; var = var->next) {
+        if (var->len == tok->len && !memcmp(tok->str, var->name, var->len)) {
+            return var;
+        }
+    }
+    return NULL;
 }
