@@ -40,6 +40,8 @@ bool consume(char *op);
 
 Token *consume_ident();
 
+Token *consume_return();
+
 // if kinda next token is sign, this function read next one token  else reurn error
 void expect(char *op);
 
@@ -71,6 +73,7 @@ typedef enum {
     ND_NUM, // integer
     ND_ASSIGN, // =
     ND_LVAR, // local var
+    ND_RETURN,
 } NodeKind;
 
 typedef struct Node Node;
@@ -104,3 +107,20 @@ Node *primary();
 void gen(Node *node);
 void gen_lval(Node *node);
 extern Node *code[];
+
+typedef struct LVar LVar;
+
+// ローカル変数の型
+struct LVar {
+    LVar *next; //次の変数かNULL
+    char *name; // 変数の名前
+    int len;    // 名前の長さ
+    int offset; // RBPからのオフセット
+};
+
+//　ローカル変数
+extern LVar *locals;
+
+LVar *find_lvar(Token *tok);
+
+int is_alnum(char c);
