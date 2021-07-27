@@ -55,4 +55,13 @@ assert 6 "foo = 1;
 bar = 2 + 3;
 foo + bar;"
 
+assert 6 "foo = 1;
+bar = 2 + 3;
+return foo + bar;"
+
+assert 5 "return 5;"
+
+assert 5 "return 5;
+return 8;"
+
 echo OK

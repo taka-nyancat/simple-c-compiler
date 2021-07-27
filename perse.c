@@ -49,6 +49,15 @@ Token *consume_ident(){
     return tok;
 }
 
+Token *consume_return(){
+    if (token->kind != TK_RETURN) {
+        return NULL;
+    }
+    Token *tok = token;
+    token = token->next;
+    return tok;
+}
+
 // if kinda next token is sign, this function read next one token  else reurn error
 void expect(char *op){
     if (token->kind != TK_RESERVED || strlen(op) !=  token->len || memcmp(token->str, op, token->len)){
@@ -117,6 +126,12 @@ Token *tokenize(){
             continue;
         }
 
+        if (startswith(p, "return") && !is_alnum(p[6])) {
+            cur = new_token(TK_RETURN, cur, p, 6);
+            p += 6;
+            continue;
+        }
+
         if ('a' <= *p && *p <= 'z') {
             char *c = p;
             while ('a' <= *c && *p <= 'z') {
@@ -142,4 +157,11 @@ LVar *find_lvar(Token *tok) {
         }
     }
     return NULL;
+}
+
+int is_alnum(char c) {
+  return ('a' <= c && c <= 'z') ||
+         ('A' <= c && c <= 'Z') ||
+         ('0' <= c && c <= '9') ||
+         (c == '_');
 }
